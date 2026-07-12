@@ -201,3 +201,178 @@ Private Function IsCorrect( _
 
 End Function
 
+'====================================================
+' 回答入力チェック
+'====================================================
+Private Function ValidateAnswer(ByVal UserAnswer As String) As Boolean
+
+    Dim i As Long
+    Dim ch As String
+
+    UserAnswer = RemoveSpaces(UserAnswer)
+
+    If UserAnswer = "" Then
+
+        ShowError "回答を入力してください。"
+
+        Exit Function
+
+    End If
+
+    For i = 1 To Len(UserAnswer)
+
+        ch = Mid$(UserAnswer, i, 1)
+
+        Select Case ch
+
+            Case "①", "②", "③", "④"
+
+            Case Else
+
+                ShowError "回答は①②③④のみ入力できます。"
+
+                Exit Function
+
+        End Select
+
+    Next i
+
+    ValidateAnswer = True
+
+End Function
+
+
+'====================================================
+' 重複回答チェック
+'====================================================
+Private Function HasDuplicateAnswer(ByVal UserAnswer As String) As Boolean
+
+    UserAnswer = NormalizeAnswer(UserAnswer)
+
+    If Len(UserAnswer) <> Len(RemoveDuplicate(UserAnswer)) Then
+
+        HasDuplicateAnswer = True
+
+    End If
+
+End Function
+
+
+'====================================================
+' 重複除去
+'====================================================
+Private Function RemoveDuplicate(ByVal Text As String) As String
+
+    Dim Result As String
+    Dim i As Long
+    Dim ch As String
+
+    Result = ""
+
+    For i = 1 To Len(Text)
+
+        ch = Mid$(Text, i, 1)
+
+        If InStr(Result, ch) = 0 Then
+
+            Result = Result & ch
+
+        End If
+
+    Next i
+
+    RemoveDuplicate = Result
+
+End Function
+
+
+'====================================================
+' 回答チェック
+'====================================================
+Public Function 回答チェック() As Boolean
+
+    Dim Ans As String
+
+    Ans = GetLearnWS.Range(CELL_USERANSWER).Value
+
+    If Not ValidateAnswer(Ans) Then Exit Function
+
+    If HasDuplicateAnswer(Ans) Then
+
+        ShowError "同じ選択肢が重複しています。"
+
+        Exit Function
+
+    End If
+
+    回答チェック = True
+
+End Function
+
+
+'====================================================
+' 解説クリア
+'====================================================
+Public Sub 解説クリア()
+
+    GetLearnWS.Range(CELL_EXPLANATION).ClearContents
+
+End Sub
+
+
+'====================================================
+' 判定クリア
+'====================================================
+Public Sub 判定クリア()
+
+    GetLearnWS.Range(CELL_RESULT).ClearContents
+
+End Sub
+
+
+'====================================================
+' 回答クリア
+'====================================================
+Public Sub 回答クリア()
+
+    GetLearnWS.Range(CELL_USERANSWER).ClearContents
+
+End Sub
+
+
+'====================================================
+' 回答関連クリア
+'====================================================
+Public Sub 回答初期化()
+
+    回答クリア
+
+    判定クリア
+
+    解説クリア
+
+End Sub
+
+
+'====================================================
+' 解説表示切替
+'====================================================
+Public Sub 解説表示切替()
+
+    With GetLearnWS.Range(CELL_EXPLANATION)
+
+        If Trim(.Value) = "" Then
+
+            解説表示
+
+        Else
+
+            .ClearContents
+
+        End If
+
+    End With
+
+End Sub
+
+
