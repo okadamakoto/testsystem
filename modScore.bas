@@ -176,4 +176,108 @@ Public Function 総不正解数() As Long
 
 End Function
 
+'====================================================
+' 未回答数
+'====================================================
+Public Function 未回答数() As Long
+
+    Dim ws As Worksheet
+    Dim LastRow As Long
+    Dim r As Long
+
+    Set ws = GetScoreWS()
+
+    LastRow = GetLastRow(ws)
+
+    For r = 2 To LastRow
+
+        If Nz(ws.Cells(r, scTotal).Value) = 0 Then
+
+            未回答数 = 未回答数 + 1
+
+        End If
+
+    Next
+
+End Function
+
+
+'====================================================
+' 全体正答率
+'====================================================
+Public Function 全体正答率() As Double
+
+    If 総回答数() = 0 Then
+
+        全体正答率 = 0
+
+    Else
+
+        全体正答率 = _
+            総正解数() / 総回答数()
+
+    End If
+
+End Function
+
+'====================================================
+' 成績リセット
+'====================================================
+Public Sub 成績リセット()
+
+    Dim ws As Worksheet
+    Dim LastRow As Long
+
+    If Not Confirm("成績をすべて削除しますか？") Then Exit Sub
+
+    Set ws = GetScoreWS()
+
+    LastRow = GetLastRow(ws)
+
+    If LastRow < 2 Then Exit Sub
+
+    ws.Range( _
+        ws.Cells(2, scTotal), _
+        ws.Cells(LastRow, scLastDate) _
+    ).ClearContents
+
+    ShowMessage "成績をリセットしました。"
+
+End Sub
+
+
+'====================================================
+' 問題の回答回数取得
+'====================================================
+Public Function 回答回数(ByVal ProblemID As Long) As Long
+
+    Dim r As Long
+
+    r = GetScoreRow(ProblemID)
+
+    If r = 0 Then Exit Function
+
+    回答回数 = _
+        Nz(GetScoreWS.Cells(r, scTotal).Value)
+
+End Function
+
+
+'====================================================
+' 問題の正答率取得
+'====================================================
+Public Function 問題正答率(ByVal ProblemID As Long) As Double
+
+    Dim r As Long
+
+    r = GetScoreRow(ProblemID)
+
+    If r = 0 Then Exit Function
+
+    問題正答率 = _
+        Nz(GetScoreWS.Cells(r, scRate).Value)
+
+End Function
+
+
 
