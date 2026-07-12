@@ -261,3 +261,228 @@ Public Sub 問題表示初期化()
 
 End Sub
 
+'====================================================
+' ランダム出題
+'====================================================
+Public Sub ランダム出題()
+
+    Dim LastRow As Long
+    Dim RowNo As Long
+    Dim CurrentRow As Long
+
+    LastRow = GetLastRow(GetMasterWS)
+
+    If LastRow < 2 Then
+        ShowError MSG_NO_DATA
+        Exit Sub
+    End If
+
+    '問題が1問だけ
+    If LastRow = 2 Then
+        表示問題 2
+        Exit Sub
+    End If
+
+    CurrentRow = GetCurrentRow()
+
+    Randomize
+
+    Do
+        RowNo = Int((LastRow - 1) * Rnd) + 2
+    Loop While RowNo = CurrentRow
+
+    表示問題 RowNo
+
+End Sub
+
+'====================================================
+' 指定問題へ移動
+'====================================================
+Public Sub 指定問題へ移動()
+
+    Dim ID As Long
+    Dim RowNo As Long
+
+    With GetLearnWS
+
+        If Trim(.Range(CELL_ID).Value) = "" Then
+
+            ShowError MSG_INPUTID
+            Exit Sub
+
+        End If
+
+        If Not IsNumeric(.Range(CELL_ID).Value) Then
+
+            ShowError MSG_NUMERIC
+            Exit Sub
+
+        End If
+
+        ID = CLng(.Range(CELL_ID).Value)
+
+    End With
+
+    RowNo = GetRowByID(ID)
+
+    If RowNo = 0 Then
+
+        ShowError MSG_NOTFOUND
+        Exit Sub
+
+    End If
+
+    表示問題 RowNo
+
+End Sub
+
+'====================================================
+' 現在の問題を再表示
+'====================================================
+Public Sub 現在の問題を再表示()
+
+    Dim RowNo As Long
+
+    RowNo = GetCurrentRow()
+
+    If RowNo = 0 Then
+
+        ShowError MSG_NOTFOUND
+        Exit Sub
+
+    End If
+
+    表示問題 RowNo
+
+End Sub
+
+'====================================================
+' 問題表示初期化
+'====================================================
+Public Sub 問題表示初期化()
+
+    ClearQuestion
+
+End Sub
+
+'====================================================
+' 指定連番の問題を表示
+'
+' 引数：ProblemID（連番）
+'====================================================
+Public Sub 表示問題ByID(ByVal ProblemID As Long)
+
+    Dim RowNo As Long
+
+    RowNo = GetRowByID(ProblemID)
+
+    If RowNo = 0 Then
+
+        ShowError MSG_NOTFOUND
+        Exit Sub
+
+    End If
+
+    表示問題 RowNo
+
+End Sub
+
+
+'====================================================
+' 現在表示中の連番取得
+'====================================================
+Public Function 現在の問題ID() As Long
+
+    現在の問題ID = GetCurrentID()
+
+End Function
+
+
+'====================================================
+' 現在表示中の問題を再読込
+'====================================================
+Public Sub 問題再読込()
+
+    Dim RowNo As Long
+
+    RowNo = GetCurrentRow()
+
+    If RowNo = 0 Then Exit Sub
+
+    表示問題 RowNo
+
+End Sub
+
+
+'====================================================
+' 最初の問題か？
+'====================================================
+Public Function IsFirstProblem() As Boolean
+
+    IsFirstProblem = (GetCurrentRow() <= 2)
+
+End Function
+
+
+'====================================================
+' 最後の問題か？
+'====================================================
+Public Function IsLastProblem() As Boolean
+
+    IsLastProblem = _
+        (GetCurrentRow() >= GetLastRow(GetMasterWS))
+
+End Function
+
+
+'====================================================
+' 表示中の問題が存在するか？
+'====================================================
+Public Function HasCurrentProblem() As Boolean
+
+    HasCurrentProblem = (GetCurrentRow() > 0)
+
+End Function
+
+
+'====================================================
+' 表示中問題の管理番号取得
+'====================================================
+Public Function 現在の管理番号() As String
+
+    With GetLearnWS
+
+        現在の管理番号 = _
+            .Range(CELL_CATEGORY).Value & _
+            .Range(CELL_NUMBER).Value
+
+    End With
+
+End Function
+
+
+'====================================================
+' 表示中問題の科目取得
+'====================================================
+Public Function 現在の科目() As String
+
+    現在の科目 = _
+        GetLearnWS.Range(CELL_SUBJECT).Value
+
+End Function
+
+
+'====================================================
+' 表示中問題の出題元取得
+'====================================================
+Public Function 現在の出題元() As String
+
+    現在の出題元 = _
+        GetLearnWS.Range(CELL_SOURCE).Value
+
+End Function
+
+
+
+
+
