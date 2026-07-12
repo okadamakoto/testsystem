@@ -59,3 +59,34 @@ Public Function 履歴件数() As Long
 
 End Function
 
+'====================================================
+' 履歴クリア
+'====================================================
+Public Sub 履歴クリア()
+
+    Dim ws As Worksheet
+    Dim LastRow As Long
+
+    If Not Confirm("学習履歴を削除しますか？") Then Exit Sub
+
+    Set ws = GetHistoryWS()
+
+    LastRow = GetLastRow(ws)
+
+    If LastRow < 2 Then Exit Sub
+
+    ws.Range(ws.Rows(2), ws.Rows(LastRow)).ClearContents
+
+    ShowMessage "学習履歴を削除しました。"
+
+End Sub
+
+'====================================================
+' 最新履歴行取得
+'====================================================
+Private Function 最新履歴行() As Long
+
+    最新履歴行 = GetLastRow(GetHistoryWS)
+
+End Function
+
