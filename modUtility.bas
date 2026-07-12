@@ -230,3 +230,31 @@ Public Function Confirm(ByVal Msg As String) As Boolean
                 APP_TITLE) = vbYes)
 
 End Function
+
+'====================================================
+' Null対策
+'====================================================
+Public Function Nz(ByVal Value As Variant, _
+                   Optional ByVal DefaultValue As Variant = 0) As Variant
+
+    If IsError(Value) Then
+
+        Nz = DefaultValue
+
+    ElseIf IsNull(Value) Then
+
+        Nz = DefaultValue
+
+    ElseIf Trim(CStr(Value)) = "" Then
+
+        Nz = DefaultValue
+
+    Else
+
+        Nz = Value
+
+    End If
+
+End Function
+
+
