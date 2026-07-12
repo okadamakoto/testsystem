@@ -155,3 +155,109 @@ Public Sub 前の問題()
 
 End Sub
 
+'====================================================
+' ランダム出題
+'====================================================
+Public Sub ランダム出題()
+
+    Dim LastRow As Long
+    Dim RowNo As Long
+
+    LastRow = GetLastRow(GetMasterWS)
+
+    If LastRow < 2 Then
+        ShowError MSG_NO_DATA
+        Exit Sub
+    End If
+
+    Randomize
+
+    RowNo = Int((LastRow - 1) * Rnd) + 2
+
+    表示問題 RowNo
+
+End Sub
+
+'====================================================
+' 指定問題へ移動
+'
+' B2へ入力された連番へ移動
+'====================================================
+Public Sub 指定問題へ移動()
+
+    Dim ID As Long
+    Dim RowNo As Long
+
+    With GetLearnWS
+
+        If Trim(.Range(CELL_ID).Value) = "" Then
+
+            ShowError MSG_INPUTID
+            Exit Sub
+
+        End If
+
+        If Not IsNumeric(.Range(CELL_ID).Value) Then
+
+            ShowError MSG_NUMERIC
+            Exit Sub
+
+        End If
+
+        ID = CLng(.Range(CELL_ID).Value)
+
+    End With
+
+    RowNo = GetRowByID(ID)
+
+    If RowNo = 0 Then
+
+        ShowError MSG_NOTFOUND
+        Exit Sub
+
+    End If
+
+    表示問題 RowNo
+
+End Sub
+
+'====================================================
+' 現在の問題を再表示
+'====================================================
+Public Sub 現在の問題を再表示()
+
+    Dim RowNo As Long
+
+    RowNo = GetCurrentRow()
+
+    If RowNo = 0 Then
+
+        ShowError MSG_NOTFOUND
+        Exit Sub
+
+    End If
+
+    表示問題 RowNo
+
+End Sub
+
+'====================================================
+' 問題表示初期化
+'====================================================
+Public Sub 問題表示初期化()
+
+    ClearAnswer
+
+    With GetLearnWS
+
+        .Range(CELL_ID).ClearContents
+        .Range(CELL_CATEGORY).ClearContents
+        .Range(CELL_NUMBER).ClearContents
+        .Range(CELL_SUBJECT).ClearContents
+        .Range(CELL_SOURCE).ClearContents
+        .Range(CELL_QUESTION).ClearContents
+
+    End With
+
+End Sub
+
