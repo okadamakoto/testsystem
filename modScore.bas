@@ -279,5 +279,72 @@ Public Function 問題正答率(ByVal ProblemID As Long) As Double
 
 End Function
 
+'====================================================
+' 回答済み問題数
+'====================================================
+Public Function 回答済み問題数() As Long
+
+    Dim ws As Worksheet
+    Dim LastRow As Long
+    Dim r As Long
+
+    Set ws = GetScoreWS()
+
+    LastRow = GetLastRow(ws)
+
+    For r = 2 To LastRow
+
+        If Nz(ws.Cells(r, scTotal).Value) > 0 Then
+
+            回答済み問題数 = 回答済み問題数 + 1
+
+        End If
+
+    Next
+
+End Function
+
+
+'====================================================
+' 学習進捗率
+'====================================================
+Public Function 学習進捗率() As Double
+
+    Dim TotalProblem As Long
+
+    TotalProblem = GetDataCount(GetMasterWS)
+
+    If TotalProblem = 0 Then Exit Function
+
+    学習進捗率 = 回答済み問題数 / TotalProblem
+
+End Function
+
+
+'====================================================
+' 苦手問題か判定
+'
+' 正答率60%未満
+'====================================================
+Public Function IsWeakProblem(ByVal ProblemID As Long) As Boolean
+
+    IsWeakProblem = _
+        (問題正答率(ProblemID) < 0.6)
+
+End Function
+
+
+'====================================================
+' 得意問題か判定
+'
+' 正答率90%以上
+'====================================================
+Public Function IsStrongProblem(ByVal ProblemID As Long) As Boolean
+
+    IsStrongProblem = _
+        (問題正答率(ProblemID) >= 0.9)
+
+End Function
+
 
 
