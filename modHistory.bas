@@ -195,4 +195,111 @@ Public Function HasHistory(ByVal ProblemID As Long) As Boolean
 
 End Function
 
+'====================================================
+' 前回間違えた問題へ移動
+'====================================================
+Public Sub 前回間違えた問題へ移動()
+
+    Dim ws As Worksheet
+    Dim r As Long
+    Dim ProblemID As Long
+
+    Set ws = GetHistoryWS()
+
+    For r = GetLastRow(ws) To 2 Step -1
+
+        If ws.Cells(r, hcResult).Value = RESULT_NG Then
+
+            ProblemID = ws.Cells(r, hcID).Value
+
+            表示問題ByID ProblemID
+
+            Exit Sub
+
+        End If
+
+    Next r
+
+    ShowMessage "不正解履歴がありません。"
+
+End Sub
+
+'====================================================
+' 前回正解した問題へ移動
+'====================================================
+Public Sub 前回正解した問題へ移動()
+
+    Dim ws As Worksheet
+    Dim r As Long
+    Dim ProblemID As Long
+
+    Set ws = GetHistoryWS()
+
+    For r = GetLastRow(ws) To 2 Step -1
+
+        If ws.Cells(r, hcResult).Value = RESULT_OK Then
+
+            ProblemID = ws.Cells(r, hcID).Value
+
+            表示問題ByID ProblemID
+
+            Exit Sub
+
+        End If
+
+    Next r
+
+    ShowMessage "正解履歴がありません。"
+
+End Sub
+
+'====================================================
+' 指定問題の履歴件数
+'====================================================
+Public Function 問題履歴件数(ByVal ProblemID As Long) As Long
+
+    Dim ws As Worksheet
+    Dim r As Long
+
+    Set ws = GetHistoryWS()
+
+    For r = 2 To GetLastRow(ws)
+
+        If ws.Cells(r, hcID).Value = ProblemID Then
+
+            問題履歴件数 = _
+                問題履歴件数 + 1
+
+        End If
+
+    Next r
+
+End Function
+
+'====================================================
+' 解答経験あり？
+'====================================================
+Public Function HasAnswered( _
+                ByVal ProblemID As Long) As Boolean
+
+    HasAnswered = _
+        (問題履歴件数(ProblemID) > 0)
+
+End Function
+
+'====================================================
+' 履歴初期化
+'====================================================
+Public Sub 履歴初期化()
+
+    Dim ws As Worksheet
+
+    Set ws = GetHistoryWS()
+
+    If GetLastRow(ws) < 2 Then Exit Sub
+
+    ws.Range("A2:Z999999").ClearContents
+
+End Sub
+
 
