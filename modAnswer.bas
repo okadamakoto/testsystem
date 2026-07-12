@@ -37,6 +37,8 @@ Public Sub 答え合わせ()
 
     End If
 
+    If Not 回答チェック() Then Exit Sub
+
     UserAnswer = Trim(wsL.Range(CELL_USERANSWER).Value)
 
     If UserAnswer = "" Then
