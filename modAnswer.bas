@@ -97,3 +97,107 @@ Public Sub 解説表示()
             wsM.Cells(RowNo, mcExplanation).Value
 
 End Sub
+
+'====================================================
+' 回答正規化
+'
+' ・全角スペース除去
+' ・半角スペース除去
+' ・タブ除去
+' ・改行除去
+' ・①②③④を昇順へ並べ替え
+'====================================================
+Private Function NormalizeAnswer(ByVal Answer As String) As String
+
+    Answer = RemoveSpaces(Answer)
+
+    Answer = SortAnswer(Answer)
+
+    NormalizeAnswer = Answer
+
+End Function
+
+
+'====================================================
+' 空白除去
+'====================================================
+Private Function RemoveSpaces(ByVal Text As String) As String
+
+    Text = Replace(Text, " ", "")
+    Text = Replace(Text, "　", "")
+    Text = Replace(Text, vbTab, "")
+    Text = Replace(Text, vbCr, "")
+    Text = Replace(Text, vbLf, "")
+
+    RemoveSpaces = Trim(Text)
+
+End Function
+
+
+'====================================================
+' 回答並べ替え
+'
+' ④①
+' ↓
+' ①④
+'====================================================
+Private Function SortAnswer(ByVal Answer As String) As String
+
+    Dim i As Long
+    Dim Result As String
+
+    Result = ""
+
+    For i = 1 To 4
+
+        If InStr(Answer, GetChoice(i)) > 0 Then
+
+            Result = Result & GetChoice(i)
+
+        End If
+
+    Next i
+
+    SortAnswer = Result
+
+End Function
+
+
+'====================================================
+' 選択肢文字取得
+'====================================================
+Private Function GetChoice(ByVal No As Long) As String
+
+    Select Case No
+
+        Case 1
+            GetChoice = "①"
+
+        Case 2
+            GetChoice = "②"
+
+        Case 3
+            GetChoice = "③"
+
+        Case 4
+            GetChoice = "④"
+
+        Case Else
+            GetChoice = ""
+
+    End Select
+
+End Function
+
+
+'====================================================
+' 正誤判定
+'====================================================
+Private Function IsCorrect( _
+            ByVal UserAnswer As String, _
+            ByVal CorrectAnswer As String) As Boolean
+
+    IsCorrect = (UserAnswer = CorrectAnswer)
+
+End Function
+
