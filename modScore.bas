@@ -346,5 +346,59 @@ Public Function IsStrongProblem(ByVal ProblemID As Long) As Boolean
 
 End Function
 
+'====================================================
+' 問題の正解数取得
+'====================================================
+Public Function 正解数(ByVal ProblemID As Long) As Long
+
+    Dim r As Long
+
+    r = GetScoreRow(ProblemID)
+
+    If r = 0 Then Exit Function
+
+    正解数 = Nz(GetScoreWS.Cells(r, scCorrect).Value)
+
+End Function
+
+
+'====================================================
+' 問題の不正解数取得
+'====================================================
+Public Function 不正解数(ByVal ProblemID As Long) As Long
+
+    Dim r As Long
+
+    r = GetScoreRow(ProblemID)
+
+    If r = 0 Then Exit Function
+
+    不正解数 = Nz(GetScoreWS.Cells(r, scWrong).Value)
+
+End Function
+
+'====================================================
+' 成績情報再計算
+'
+' 全問題の正答率を再計算
+'====================================================
+Public Sub 成績再計算()
+
+    Dim ws As Worksheet
+    Dim LastRow As Long
+    Dim r As Long
+
+    Set ws = GetScoreWS()
+
+    LastRow = GetLastRow(ws)
+
+    For r = 2 To LastRow
+
+        正答率更新 r
+
+    Next
+
+End Sub
+
 
 
