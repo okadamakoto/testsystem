@@ -72,6 +72,8 @@ Public Sub “š‚¦‡‚í‚¹()
         —š—ğ•Û‘¶ RESULT_NG
 
     End If
+    
+    ‰ğà•\¦
 
 End Sub
 
